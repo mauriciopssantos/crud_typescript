@@ -1,23 +1,42 @@
 import { request, Request, Response, Router } from "express";
-//import { ClientRepositoryInMemory } from "./infra/repository/memory/client-repository-inmemory";
-import { ClientController } from "./controller/client-controller";
-import { ClientListController } from "./controller/client-list-controller";
 import { ClientRepositoryDatabase } from "./infra/repository/database/client-repository-database";
-import { ClientRepository } from "./model/repository/client-repository";
+
+//import Controllers
+import { ClientController } from "./controller/client-create-controller";
+import { ClientListController } from "./controller/client-list-controller";
 import { ClientGetNameController } from "./controller/client-get-name-controller";
 import { ClientRemoveController } from "./controller/client-remove-controller";
 import { ClientGetByIdController } from "./controller/client-get-byid-controller";
-import { ClientUpdateByIdController } from "./controller/client-update-byid-controller";
+import { ClientUpdateController } from "./controller/client-update-byid-controller";
+
+
+// Import services
+import { ClientCreateService } from "./services/client-create-service";
+import { ClientListService } from "./services/client-list-service";
+import { ClientGetNameService } from "./services/client-get-name-service";
+import { ClientRemoveService } from "./services/client-remove-service";
+import { ClientGetByIdService } from "./services/client-get-byid-service";
+import { ClientUpdateService } from "./services/client-update-service";
+
 
 const router = Router()
-//const repository = new ClientRepositoryInMemory()
 const repository = new ClientRepositoryDatabase()
-const clientController = new ClientController(repository)
-const clientListController = new ClientListController(repository)
-const clientGetNameController = new ClientGetNameController(repository)
-const clientRemoveClientController = new ClientRemoveController(repository)
-const clientGetByIdController = new ClientGetByIdController(repository)
-const clientUpdateByIdController = new ClientUpdateByIdController(repository)
+
+const clientCreateService = new ClientCreateService(repository);
+const clientListService = new ClientListService(repository);
+const clientGetNameService = new ClientGetNameService(repository);
+const clientRemoveService = new ClientRemoveService(repository);
+const clientGetByIdService = new ClientGetByIdService(repository);
+const clientUpdateService = new ClientUpdateService(repository);
+
+const clientController = new ClientController(clientCreateService);
+const clientListController = new ClientListController(clientListService);
+const clientGetNameController = new ClientGetNameController(clientGetNameService);
+const clientRemoveClientController = new ClientRemoveController(clientRemoveService);
+const clientGetByIdController = new ClientGetByIdController(clientGetByIdService);
+const clientUpdateByIdController = new ClientUpdateController(clientUpdateService);
+
+
 
 router.post('/client', async (request: Request, response: Response) => {
     try {
@@ -48,10 +67,5 @@ router.delete('/client/:id' ,(request: Request, response: Response) => {
 router.patch('/client/:id',(request: Request, response: Response) => {
       clientUpdateByIdController.execute(request, response);
 })
-
-
-router.get('/test', (req: Request, res: Response) => {
-    res.send('Server is up and running');
-  });
 
 export {router} 

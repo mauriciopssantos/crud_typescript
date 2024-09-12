@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../model/repository/client-repository";
 import { Uuid } from "../model/uuid";
+import { ClientRemoveService } from "../services/client-remove-service";
 
 export class ClientRemoveController {
-    constructor(readonly repository: ClientRepository) {}
+    constructor(readonly service: ClientRemoveService) {}
 
     async execute(request: Request, response: Response) {
         // Extract id from request parameters.
@@ -23,7 +23,7 @@ export class ClientRemoveController {
         }
 
         try {
-            await this.repository.removeClient(id);
+            await this.service.execute(id);
             response.status(204).json({});
         } catch (error) {
             console.error('Error in execute method:', error);

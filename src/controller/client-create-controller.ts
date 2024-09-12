@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../model/repository/client-repository";
-import { Client } from "../model/client";
+import { ClientCreateService } from "../services/client-create-service";
 
 
 
 export class ClientController {
 
-    constructor (readonly repository: ClientRepository){
+    constructor (readonly service: ClientCreateService){
 
     }
 
@@ -16,8 +15,7 @@ export class ClientController {
           if (!name || !document) {
             return response.status(400).json({ error: 'Name and document are required' });
           }
-          const client = Client.create(name, document);
-          await this.repository.save(client);
+          const client = await this.service.execute(name,document);
           response.status(201).json({ client });
         } catch (error) {
           console.error('Error in execute method:', error);

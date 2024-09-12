@@ -50,7 +50,7 @@ export class ClientRepositoryDatabase implements ClientRepository{
     
             const client = results[0];
             return Client.create(
-                name, 
+                client['name'], 
                 client['document'], 
                 client['id']
             );

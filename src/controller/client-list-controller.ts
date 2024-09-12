@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../model/repository/client-repository";
+import { ClientListService } from "../services/client-list-service";
 
 
 
 export class ClientListController {
 
-    constructor (readonly repository: ClientRepository){
+    constructor (readonly service: ClientListService){
 
     }
 
     async execute(request: Request, response: Response) {
         try {
-            const clientCollection = await this.repository.getAll();
+            const clientCollection = await this.service.execute();
             response.status(200).json({ clientCollection });
 
         } catch (error) {

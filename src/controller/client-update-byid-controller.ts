@@ -1,21 +1,16 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../model/repository/client-repository";
-import { ClientUpdateDTO } from "./dtos/client-update-dto";
-import { Client } from "../model/client";
-import { Uuid } from "../model/uuid";
+import { ClientUpdateService } from "../services/client-update-service";
 
 
 
-export class ClientUpdateByIdController{
-    constructor(readonly repository: ClientRepository){
+export class ClientUpdateController{
+    constructor(readonly service: ClientUpdateService){
     }
 
     async execute(request: Request, response: Response){
         const { id } = request.params
         const {name, document} = request.body
-        let client = Client.create(name, document, id)
-        const clientDto = new ClientUpdateDTO(client.getName(), client.getDocument().getValue())
-        client = await this.repository.updateClient(client.getId(), clientDto) 
-        response.status(200).json({client})
+        const updatedClient = await this.service.execute(id, name, document)
+        response.status(200).json({updatedClient})
     }
 }

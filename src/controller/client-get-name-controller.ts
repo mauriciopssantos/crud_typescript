@@ -1,21 +1,19 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../model/repository/client-repository";
-import { Name } from "../model/name";
+import { ClientGetNameService } from "../services/client-get-name-service";
 
 
 
 export class ClientGetNameController {
 
-    constructor (readonly repository: ClientRepository){
+    constructor (readonly service: ClientGetNameService){
 
     }
 
     async execute(request: Request, response: Response) {
-      let name:string | Name = request.params.name
-      name = new Name(name)
+      let name:string = request.params.name
 
         try {
-            const clientName = await this.repository.getName(name);
+            const clientName = await this.service.execute(name);
             response.status(200).json({ clientName });
 
         } catch (error) {
